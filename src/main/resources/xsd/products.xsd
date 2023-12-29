@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema elementFormDefault="qualified" targetNamespace="http://xmlns.oracle.com/Enterprise/Tools/schemas" xmlns="http://xmlns.oracle.com/Enterprise/Tools/schemas" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="BB_PECONSUPRODPSREQ">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FieldTypes" type="FieldTypes_TypeShape"/>
+                <xsd:element name="MsgData" type="MsgData_TypeShape"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="FieldTypes_TypeShape">
+        <xsd:sequence>
+            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_I_TypeShape"/>
+            <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesBB_PECLIPRGET_I_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="AA_NIT" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="CANAL" type="FieldTypesCharFieldType"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesPSCAMA_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="LANGUAGE_CD" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="AUDIT_ACTN" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BASE_LANGUAGE_CD" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="MSG_SEQ_FLG" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="PROCESS_INSTANCE" type="FieldTypesNumberFieldType"/>
+            <xsd:element minOccurs="0" name="PUBLISH_RULE_ID" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="MSGNODENAME" type="FieldTypesCharFieldType"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesCharFieldType">
+        <xsd:attribute fixed="CHAR" name="type" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesNumberFieldType">
+        <xsd:attribute fixed="NUMBER" name="type" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesDateFieldType">
+        <xsd:attribute fixed="DATE" name="type" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesTimeFieldType">
+        <xsd:attribute fixed="TIME" name="type" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesDateTimeFieldType">
+        <xsd:attribute fixed="DATETIME" name="type" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesImageRefFieldType">
+        <xsd:attribute fixed="IMAGEREFERENCE" name="type" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="MsgData_TypeShape">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="Transaction_TypeShape"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Transaction_TypeShape">
+        <xsd:sequence>
+            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecord_TypeShape"/>
+            <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecord_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="AA_TIPO_DOC_TypeShape"/>
+            <xsd:element minOccurs="0" name="AA_NIT" type="AA_NIT_TypeShape"/>
+            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
+            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
+            <xsd:element minOccurs="0" name="CANAL" type="CANAL_TypeShape"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="AA_TIPO_DOC_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="AA_TIPO_DOC_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="AA_NIT_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="AA_NIT_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PRODUCT_GROUP_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="PRODUCT_GROUP_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="FIN_ACCOUNT_ID_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="FIN_ACCOUNT_ID_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="CANAL_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="CANAL_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="AA_TIPO_DOC_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Proyecto     #Ref      Fecha          Des      Descripcion
+                --------------     ---------    -----------------    --------    ------------------------------------------
+                CU               000      2003/04/30    EG      Campos Adicionales
+                Modelo Global</xsd:documentation>
+            <xsd:documentation>AA_TIPO_DOC is a character of length 2. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="2"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="AA_NIT_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>AA_NIT is a character of length 17</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="17"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="PRODUCT_GROUP_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>PRoduct Group</xsd:documentation>
+            <xsd:documentation>PRODUCT_GROUP is a character of length 10. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="10"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="FIN_ACCOUNT_ID_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Financial Account Number</xsd:documentation>
+            <xsd:documentation>FIN_ACCOUNT_ID is a character of length 20. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="CANAL_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>CANAL is a character of length 4. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="PSCAMAMsgDataRecord_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="LANGUAGE_CD" type="LANGUAGE_CD_TypeShape"/>
+            <xsd:element minOccurs="0" name="AUDIT_ACTN" type="AUDIT_ACTN_TypeShape"/>
+            <xsd:element minOccurs="0" name="BASE_LANGUAGE_CD" type="BASE_LANGUAGE_CD_TypeShape"/>
+            <xsd:element minOccurs="0" name="MSG_SEQ_FLG" type="MSG_SEQ_FLG_TypeShape"/>
+            <xsd:element minOccurs="0" name="PROCESS_INSTANCE" type="PROCESS_INSTANCE_TypeShape"/>
+            <xsd:element minOccurs="0" name="PUBLISH_RULE_ID" type="PUBLISH_RULE_ID_TypeShape"/>
+            <xsd:element minOccurs="0" name="MSGNODENAME" type="MSGNODENAME_TypeShape"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="LANGUAGE_CD_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="LANGUAGE_CD_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="AUDIT_ACTN_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="AUDIT_ACTN_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BASE_LANGUAGE_CD_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BASE_LANGUAGE_CD_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="MSG_SEQ_FLG_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="MSG_SEQ_FLG_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PROCESS_INSTANCE_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="PROCESS_INSTANCE_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PUBLISH_RULE_ID_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="PUBLISH_RULE_ID_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="MSGNODENAME_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="MSGNODENAME_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="LANGUAGE_CD_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Language Code</xsd:documentation>
+            <xsd:documentation>LANGUAGE_CD is a character of length 3. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="3"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="AUDIT_ACTN_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Audit Action Code for Application Messages.  This tells the subscriber whether the row has been added, changed, or deleted.</xsd:documentation>
+            <xsd:documentation>AUDIT_ACTN is a character of length 1. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BASE_LANGUAGE_CD_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>BASE_LANGUAGE_CD is a character of length 3. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="3"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="MSG_SEQ_FLG_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>MSG_SEQ_FLG is a character of length 1. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="PROCESS_INSTANCE_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Process Instance</xsd:documentation>
+            <xsd:documentation>PROCESS_INSTANCE is a number of length 10 with a decimal position of 0</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:integer">
+            <xsd:totalDigits value="10"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="PUBLISH_RULE_ID_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Publish Rule ID</xsd:documentation>
+            <xsd:documentation>PUBLISH_RULE_ID is a character of length 30. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="30"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="MSGNODENAME_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Application Message Node Name.  Name of the Application Message Node Definition.</xsd:documentation>
+            <xsd:documentation>MSGNODENAME is a character of length 30. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="30"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="BB_PSCONSUPRODPERES">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FieldTypes" type="FieldTypesRES_TypeShape"/>
+                <xsd:element name="MsgData" type="MsgDataRES_TypeShape"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="FieldTypesRES_TypeShape">
+        <xsd:sequence>
+            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_IRES_TypeShape"/>
+            <xsd:element name="BB_PEPRODUC_I" type="FieldTypesBB_PEPRODUC_I_TypeShape"/>
+            <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesBB_PECLIPRGET_IRES_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="MESSAGE_NBR" type="FieldTypesNumberFieldType"/>
+            <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="AA_NIT" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="CANAL" type="FieldTypesCharFieldType"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="FieldTypesBB_PEPRODUC_I_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BO_NAME" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="PRODUCT_ID" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="DESCR" type="FieldTypesCharFieldType"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="MsgDataRES_TypeShape">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="TransactionRES_TypeShape"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="TransactionRES_TypeShape">
+        <xsd:sequence>
+            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecordRES_TypeShape"/>
+            <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecordRES_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="MESSAGE_NBR" type="MESSAGE_NBR_TypeShape"/>
+            <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="MESSAGE_TEXT_TypeShape"/>
+            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="AA_TIPO_DOC_TypeShape"/>
+            <xsd:element minOccurs="0" name="AA_NIT" type="AA_NIT_TypeShape"/>
+            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
+            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
+            <xsd:element minOccurs="0" name="CANAL" type="CANAL_TypeShape"/>
+            <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+                <xsd:element name="BB_PEPRODUC_I" type="BB_PEPRODUC_IMsgDataRecord_TypeShape"/>
+                <xsd:element minOccurs="0" name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
+            </xsd:sequence>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="BB_PEPRODUC_IMsgDataRecord_TypeShape">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
+            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
+            <xsd:element minOccurs="0" name="BO_NAME" type="BO_NAME_TypeShape"/>
+            <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="BB_COD_OFI_APER_TypeShape"/>
+            <xsd:element minOccurs="0" name="PRODUCT_ID" type="PRODUCT_ID_TypeShape"/>
+            <xsd:element minOccurs="0" name="DESCR" type="DESCR_TypeShape"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="MESSAGE_NBR_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="MESSAGE_NBR_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="MESSAGE_TEXT_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="MESSAGE_TEXT_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="MESSAGE_NBR_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Message Number.  This field refers to the Message Number in the Message Catalog.</xsd:documentation>
+            <xsd:documentation>MESSAGE_NBR is a number of length 5 with a decimal position of 0</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:integer">
+            <xsd:totalDigits value="5"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="MESSAGE_TEXT_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Message Text  This field refers to the Text for a particular Message Number in the Message Catalog.</xsd:documentation>
+            <xsd:documentation>MESSAGE_TEXT is a character of length 100</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="BO_NAME_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BO_NAME_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BB_COD_OFI_APER_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BB_COD_OFI_APER_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PRODUCT_ID_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="PRODUCT_ID_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="DESCR_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="DESCR_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="BO_NAME_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Name Description of Business Object</xsd:documentation>
+            <xsd:documentation>BO_NAME is a character of length 50. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BB_COD_OFI_APER_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>BB_COD_OFI_APER is a character of length 10. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="10"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="PRODUCT_ID_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Product ID</xsd:documentation>
+            <xsd:documentation>PRODUCT_ID is a character of length 18. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="18"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DESCR_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>Description</xsd:documentation>
+            <xsd:documentation>DESCR is a character of length 30</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="30"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="ServiceStatus">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="statusCode" type="xsd:string"/>
+                <xsd:element name="message" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

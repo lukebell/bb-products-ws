@@ -1,98 +1,108 @@
 package com.bb.products.ws.helper;
 
 import com.bb.products.ws.data.enums.IdType;
-import com.bb.products.ws.data.enums.MessageCode;
 import com.bb.products.ws.data.enums.ProductType;
 import com.bb.products.ws.data.model.ActiveProductsMapper;
 import com.bb.products.ws.data.model.BbTransaction;
 import com.bb.products.ws.exceptions.BadRequestException;
 import com.oracle.xmlns.enterprise.tools.schemas.*;
 import lombok.val;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.groupingBy;
 import static com.bb.products.ws.data.enums.IdType.Type.PJ;
+import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_ADDITIONAL_SELECT;
+import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_INNER_JOINS_QUERY;
+import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_ASSET_NUMBER_WHERE;
+import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PRODUCT_GROUP_WHERE;
+import static com.bb.products.ws.data.enums.MessageCode.OK;
 
 @Component
 public class ProductMapperHelper {
 
   public String buildQueryParams(BbTransaction bbt, List<String> params) {
 
-    StringBuilder query = new StringBuilder(bbt.getIdType().getType().getQuerySelect());
+    StringBuilder query = new StringBuilder(bbt.getIdType().getType().getQuerySelect())
+        .append(", ")
+        .append(ACTIVE_PRODUCTS_ADDITIONAL_SELECT.getValue())
+        .append(bbt.getIdType().getType().getQueryFrom())
+        .append(ACTIVE_PRODUCTS_INNER_JOINS_QUERY.getValue());
 
-    val queryJoins = "INNER JOIN S_PROD_INT.ID = ? " +
-        "INNER JOIN GROUPS ON S_ASSET.ID = ? " +
-        "INNER JOIN GROUPS ON S_ASSET_X.ID = ? ";
-
-    if (bbt.getProductType() != null && StringUtils.isNotBlank(bbt.getProductNumber())) {
-      params.add(bbt.getProductType().getPeopleSoftCode());
-      params.add(bbt.getProductNumber());
-      query.append(queryJoins);
-    }
-
+    // add id type and id number
+    query.append(bbt.getIdType().getType().getQueryWhere());
     params.add(bbt.getIdType().getSiebelCode());
     params.add(bbt.getIdNumber());
-    query.append(bbt.getIdType().getType().getQueryWhere());
+
+    // add product group
+    if (bbt.getProductType() != null && CollectionUtils.isNotEmpty(bbt.getProductType().getSiebelCodes())) {
+      query.append(ACTIVE_PRODUCTS_PRODUCT_GROUP_WHERE.getValue());
+      params.add(String.join(",", bbt.getProductType().getSiebelCodes()));
+    }
+
+    // add asset number
+    if (StringUtils.isNotBlank(bbt.getProductNumber())) {
+      query.append(ACTIVE_PRODUCTS_ASSET_NUMBER_WHERE.getValue());
+      params.add(bbt.getProductNumber());
+    }
 
     return query.toString();
   }
 
-  public List<BbTransaction> getTransactions(List<TransactionTypeShape> transactions) {
+  public List<BbTransaction> getTransactions(List<TransactionPECONSUTypeShape> transactions) {
     return transactions.stream().map(t -> BbTransaction.builder()
         .idType(getIdType(t))
         .idNumber(getIdNumber(t))
         .productType(getProductType(t))
         .productNumber(getProductNumber(t))
         .build()
-    ).collect(Collectors.toList());
+    ).collect(toList());
   }
 
-  private IdType getIdType(TransactionTypeShape t) {
+  private IdType getIdType(TransactionPECONSUTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getAATIPODOC())
         .filter(aaType -> StringUtils.isNotBlank(aaType.getValue()))
         .map(typeId -> IdType.getIdTypeByPeopleSoftCode(typeId.getValue()))
         .orElseThrow(() -> new BadRequestException("AA_TIPO_DOC is required"));
   }
 
-  private String getIdNumber(TransactionTypeShape t) {
+  private String getIdNumber(TransactionPECONSUTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getAANIT())
         .filter(aaNit -> StringUtils.isNotBlank(aaNit.getValue()))
         .map(AANITTypeShape::getValue)
         .orElseThrow(() -> new BadRequestException("AA_NIT is required"));
   }
 
-  private ProductType getProductType(TransactionTypeShape t) {
+  private ProductType getProductType(TransactionPECONSUTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getPRODUCTGROUP())
         .filter(productGroup -> StringUtils.isNotBlank(productGroup.getValue()))
         .map(productType -> ProductType.getProductTypeByPeopleSoftCode(productType.getValue()))
         .orElse(null);
   }
 
-  private String getProductNumber(TransactionTypeShape t) {
+  private String getProductNumber(TransactionPECONSUTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getFINACCOUNTID())
         .filter(finAccount -> StringUtils.isNotBlank(finAccount.getValue()))
         .map(FINACCOUNTIDTypeShape::getValue)
         .orElse(null);
   }
 
-  public BBPSCONSUPRODPERES buildResponse(List<List<ActiveProductsMapper>> results) {
-    BBPSCONSUPRODPERES response = getBbpsconsuprodperes();
+  public BBPSCONSUPRODPERES1 buildResponse(List<List<ActiveProductsMapper>> results) {
+    BBPSCONSUPRODPERES1 response = getBbpsconsuprodperes();
 
     results.forEach(r -> {
-      TransactionRESTypeShape transaction = new TransactionRESTypeShape();
-      BBPECLIPRGETIMsgDataRecordRESTypeShape bbpe = new BBPECLIPRGETIMsgDataRecordRESTypeShape();
-      r.forEach(apm -> {
-        bbpe.setMESSAGENBR(buildMESSAGENBR(MessageCode.OK));
-        bbpe.setMESSAGETEXT(buildMESSAGETEXT(MessageCode.OK));
-        bbpe.setAANIT(buildAANIT(apm.getIdNumber()));
-        bbpe.setAATIPODOC(buildAATIPODOC(apm.getIdType()));
-        // TODO: group by id number and type
-        bbpe.getBBPEPRODUCIAndPSCAMA().add(buildBBPEPRODUCI(apm));
-      });
+      TransactionPEPRODUC1TypeShape transaction = new TransactionPEPRODUC1TypeShape();
+      BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape bbpe = new BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape();
+      bbpe.setMESSAGENBR(buildMESSAGENBR(OK.getMsgCode()));
+      bbpe.setMESSAGETEXT(buildMESSAGETEXT(OK.getMessage()));
+      buildMsgDataRecord(r, bbpe);
       transaction.setBBPECLIPRGETI(bbpe);
       response.getMsgData().getTransaction().add(transaction);
     });
@@ -100,14 +110,29 @@ public class ProductMapperHelper {
     return response;
   }
 
-  private BBPEPRODUCIMsgDataRecordTypeShape buildBBPEPRODUCI(ActiveProductsMapper apm) {
-    BBPEPRODUCIMsgDataRecordTypeShape typeShape = new BBPEPRODUCIMsgDataRecordTypeShape();
+  private void buildMsgDataRecord(List<ActiveProductsMapper> r, BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape bbpe) {
+    r.stream()
+        .collect(groupingBy(row -> new ImmutablePair<String, String>(row.getIdType(), row.getIdNumber()) {
+        }))
+        .forEach((pair, value) -> {
+          bbpe.setAANIT(buildAANIT(pair.getValue()));
+          bbpe.setAATIPODOC(buildAATIPODOC(pair.getKey()));
+          value.forEach(v ->
+              bbpe.getBBPEPRODUC1IAndPSCAMA().add(buildBBPEPRODUCI(v))
+          );
+        });
+  }
+
+  private BBPEPRODUC1IMsgDataRecordTypeShape buildBBPEPRODUCI(ActiveProductsMapper apm) {
+    BBPEPRODUC1IMsgDataRecordTypeShape typeShape = new BBPEPRODUC1IMsgDataRecordTypeShape();
+
     typeShape.setFINACCOUNTID(buildFINACCOUNTID(apm.getProductNumber()));
     typeShape.setPRODUCTID(buildPRODUCTID(apm.getProductId()));
     typeShape.setPRODUCTGROUP(buildPRODUCTGROUP(apm.getProductGroup()));
-    typeShape.setDESCR(buildDESCR(apm.getProdDescription()));
+    typeShape.setDESCR(buildDESCR(apm.getProductDescription()));
     typeShape.setBBCODOFIAPER(buildBBCODOFIAPER(apm.getOfficeCode()));
     typeShape.setBONAME(buildBONAME(apm));
+
     return typeShape;
   }
 
@@ -115,12 +140,12 @@ public class ProductMapperHelper {
     BONAMETypeShape bonameTypeShape = new BONAMETypeShape();
     val idType = IdType.getIdTypeBySiebelCode(apm.getIdType());
     val values = PJ == idType.getType() ?
-        List.of(Optional.ofNullable(apm.getDesc()).orElse("")) :
+        List.of(getOrEmpty(apm.getDesc())) :
         List.of(
-            Optional.ofNullable(apm.getLastName()).orElse(""),
-            Optional.ofNullable(apm.getMaidenName()).orElse(""),
-            Optional.ofNullable(apm.getFstName()).orElse(""),
-            Optional.ofNullable(apm.getMidName()).orElse("")
+            getOrEmpty(apm.getLastName()),
+            getOrEmpty(apm.getMaidenName()),
+            getOrEmpty(apm.getFstName()),
+            getOrEmpty(apm.getMidName())
         );
     bonameTypeShape.setValue(idType.getType().buildBoName(values));
     return bonameTypeShape;
@@ -140,7 +165,7 @@ public class ProductMapperHelper {
 
   private PRODUCTGROUPTypeShape buildPRODUCTGROUP(String productGroup) {
     PRODUCTGROUPTypeShape productgroupTypeShape = new PRODUCTGROUPTypeShape();
-    productgroupTypeShape.setValue(productGroup);
+    productgroupTypeShape.setValue(ProductType.getPeopleSoftCodeBySiebelCode(productGroup));
     return productgroupTypeShape;
   }
 
@@ -156,15 +181,15 @@ public class ProductMapperHelper {
     return finaccountidTypeShape;
   }
 
-  private MESSAGETEXTTypeShape buildMESSAGETEXT(MessageCode code) {
+  private MESSAGETEXTTypeShape buildMESSAGETEXT(String message) {
     MESSAGETEXTTypeShape messagetextTypeShape = new MESSAGETEXTTypeShape();
-    messagetextTypeShape.setValue(code.getMessage());
+    messagetextTypeShape.setValue(message);
     return messagetextTypeShape;
   }
 
-  private MESSAGENBRTypeShape buildMESSAGENBR(MessageCode code) {
+  private MESSAGENBRTypeShape buildMESSAGENBR(BigInteger code) {
     MESSAGENBRTypeShape messagenbrTypeShape = new MESSAGENBRTypeShape();
-    messagenbrTypeShape.setValue(code.getMsgCode());
+    messagenbrTypeShape.setValue(code);
     return messagenbrTypeShape;
   }
 
@@ -180,15 +205,78 @@ public class ProductMapperHelper {
     return aanitTypeShape;
   }
 
-  private BBPSCONSUPRODPERES getBbpsconsuprodperes() {
-    BBPSCONSUPRODPERES response = new BBPSCONSUPRODPERES();
-    FieldTypesRESTypeShape fieldTypes = new FieldTypesRESTypeShape();
-    fieldTypes.setBBPECLIPRGETI(new FieldTypesBBPECLIPRGETIRESTypeShape());
-    fieldTypes.setBBPEPRODUCI(new FieldTypesBBPEPRODUCITypeShape());
+  private BBPSCONSUPRODPERES1 getBbpsconsuprodperes() {
+    BBPSCONSUPRODPERES1 response = new BBPSCONSUPRODPERES1();
+    FieldTypesPSCONSU1TypeShape fieldTypes = new FieldTypesPSCONSU1TypeShape();
+    fieldTypes.setBBPECLIPRGETI(new FieldTypesBBPECLIPRGETITypeShape());
+    fieldTypes.setBBPEPRODUC1I(new FieldTypesBBIPEPRODUC1TypeShape());
     response.setFieldTypes(fieldTypes);
-    MsgDataRESTypeShape msgData = new MsgDataRESTypeShape();
+    MsgDataPEPRODUC1TypeShape msgData = new MsgDataPEPRODUC1TypeShape();
     response.setMsgData(msgData);
     return response;
+  }
+
+  private String getOrEmpty(String value) {
+    return Optional.ofNullable(value).orElse("");
+  }
+
+  public BBPSCONSUPRODPERES1 buildErrorResponse(BigInteger msgCode, String message) {
+    BBPSCONSUPRODPERES1 response = getBbpsconsuprodperes();
+    TransactionPEPRODUC1TypeShape transaction = new TransactionPEPRODUC1TypeShape();
+    BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape bbpe = new BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape();
+    bbpe.setMESSAGENBR(buildMESSAGENBR(msgCode));
+    bbpe.setMESSAGETEXT(buildMESSAGETEXT(message));
+    transaction.setBBPECLIPRGETI(bbpe);
+    response.getMsgData().getTransaction().add(transaction);
+
+    return response;
+  }
+
+  public List<List<ActiveProductsMapper>> mockResults() {
+    val result1 = ActiveProductsMapper.builder()
+        .idNumber("36156458")
+        .idType("1000002")
+        .productNumber("00757927817")
+        .productGroup("0202")
+        .productId("119MLS")
+        .fstName("ANGELA")
+        .midName("MARIA")
+        .maidenName("JAMIOY")
+        .lastName("BERRUECOS")
+        .officeCode("0459")
+        .productDescription("Crédito de vivienda VIS")
+        .build();
+
+    val result2 = ActiveProductsMapper.builder()
+        .idNumber("36156458")
+        .idType("1000002")
+        .productNumber("00757927888")
+        .productGroup("0304")
+        .productId("120MLS")
+        .fstName("CARLOS")
+        .midName("ALBERTO")
+        .maidenName("PALACIO")
+        .lastName("VADERRAMA")
+        .officeCode("0460")
+        .productDescription("Otros Créditos de vivienda")
+        .build();
+
+    val result3 = ActiveProductsMapper.builder()
+        .idNumber("36156458")
+        .idType("1000002")
+        .productNumber("0075792789")
+        .productId("220MLS")
+        .fstName("ALBEIRO")
+        .midName("")
+        .maidenName("LOPEZ")
+        .lastName("USURIAGA")
+        .officeCode("0960")
+        .productDescription("Prestamos")
+        .build();
+
+    val results = List.of(result1, result2, result3);
+
+    return List.of(results);
   }
 
 }

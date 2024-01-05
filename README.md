@@ -31,3 +31,67 @@ The following guides illustrate how to use some features concretely:
 
 ### WSDL
 * http://localhost:8080/soap/products-ws.wsdl
+
+### Request "BB_PECONSUPRODPSREQ1"
+
+```angular2html
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://xmlns.oracle.com/Enterprise/Tools/schemas">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <sch:BB_PECONSUPRODPSREQ1>
+         <sch:FieldTypes>
+            <sch:BB_PECLIPRGET_I class="R" />
+            <sch:PSCAMA class="R" />
+         </sch:FieldTypes>
+         <sch:MsgData>
+            <!--Zero or more repetitions:-->
+            <sch:Transaction>
+               <sch:BB_PECLIPRGET_I class="R">
+                  <sch:AA_TIPO_DOC>T</sch:AA_TIPO_DOC>
+                  <sch:AA_NIT>36156458</sch:AA_NIT>
+                  <!--Optional:-->
+                  <sch:PRODUCT_GROUP></sch:PRODUCT_GROUP>
+                  <!--Optional:-->
+                  <sch:FIN_ACCOUNT_ID></sch:FIN_ACCOUNT_ID>
+               </sch:BB_PECLIPRGET_I>
+               <sch:PSCAMA class="R" />
+            </sch:Transaction>
+         </sch:MsgData>
+      </sch:BB_PECONSUPRODPSREQ1>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
+
+### Response "BB_PSCONSUPRODPERES1"
+
+```angular2html
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns2:BB_PSCONSUPRODPERES1 xmlns:ns2="http://xmlns.oracle.com/Enterprise/Tools/schemas">
+         <ns2:FieldTypes>
+            <ns2:BB_PECLIPRGET_I/>
+            <ns2:BB_PEPRODUC1_I/>
+         </ns2:FieldTypes>
+         <ns2:MsgData>
+            <ns2:Transaction>
+               <ns2:BB_PECLIPRGET_I>
+                  <ns2:MESSAGE_NBR>0</ns2:MESSAGE_NBR>
+                  <ns2:MESSAGE_TEXT>Message Successfully Processed</ns2:MESSAGE_TEXT>
+                  <ns2:AA_TIPO_DOC>1000002</ns2:AA_TIPO_DOC>
+                  <ns2:AA_NIT>36156458</ns2:AA_NIT>
+                  <ns2:BB_PEPRODUC1_I>
+                     <ns2:PRODUCT_GROUP/>
+                     <ns2:FIN_ACCOUNT_ID>ADMNAIQ-192721</ns2:FIN_ACCOUNT_ID>
+                     <ns2:BO_NAME>FONTECHA RIASCOS, JUAN ANTONIO</ns2:BO_NAME>
+                     <ns2:BB_COD_OFI_APER/>
+                     <ns2:PRODUCT_ID>1-W5-1</ns2:PRODUCT_ID>
+                     <ns2:DESCR>PRODCUTO ERRADO</ns2:DESCR>
+                  </ns2:BB_PEPRODUC1_I>
+               </ns2:BB_PECLIPRGET_I>
+            </ns2:Transaction>
+         </ns2:MsgData>
+      </ns2:BB_PSCONSUPRODPERES1>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```

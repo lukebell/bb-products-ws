@@ -2,8 +2,8 @@ package com.bb.products.ws.controller;
 
 import com.bb.products.ws.service.ProductService;
 
-import com.oracle.xmlns.enterprise.tools.schemas.BBPECONSUPRODPSREQ;
-import com.oracle.xmlns.enterprise.tools.schemas.BBPSCONSUPRODPERES;
+import com.oracle.xmlns.enterprise.tools.schemas.BBPECONSUPRODPSREQ1;
+import com.oracle.xmlns.enterprise.tools.schemas.BBPSCONSUPRODPERES1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -24,9 +24,9 @@ public class ProductsEndpoint {
     this.productService = productService;
   }
 
-  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "BB_PECONSUPRODPSREQ")
+  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "BB_PECONSUPRODPSREQ1")
   @ResponsePayload
-  public BBPSCONSUPRODPERES getActiveProducts(@RequestPayload BBPECONSUPRODPSREQ request) {
+  public BBPSCONSUPRODPERES1 getActiveProducts(@RequestPayload BBPECONSUPRODPSREQ1 request) {
     log.debug("Getting active products for request: {}", request.toString());
 
     return productService.getActiveProducts(request);

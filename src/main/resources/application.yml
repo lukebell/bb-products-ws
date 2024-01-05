@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql:aws://localhost:3306/bb_products?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+    url: jdbc:mysql:aws://localhost:3306/siebel?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
     username: root
     password: root
     driverClassName: software.aws.rds.jdbc.mysql.Driver
@@ -9,6 +9,6 @@ spring:
       maximumPoolSize: 30
       connectionTestQuery: select now() from dual
       connectionTimeout: 20000
-      jdbc-url: jdbc:mysql:aws://localhost:3306/bb_products?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+      jdbc-url: jdbc:mysql:aws://localhost:3306/siebel?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
       username: root
       password: root

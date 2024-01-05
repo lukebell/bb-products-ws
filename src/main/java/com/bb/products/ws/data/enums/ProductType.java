@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,5 +59,13 @@ public enum ProductType {
         .filter(productType -> productType.getPeopleSoftCode().equalsIgnoreCase(psCode))
         .findFirst()
         .orElseThrow(() -> new BadRequestException(String.format("Unknown Product Type: %s", psCode)));
+  }
+
+  public static String getPeopleSoftCodeBySiebelCode(String siebelCode) {
+    return Optional.ofNullable(siebelCode).flatMap(sc -> Arrays.stream(ProductType.values())
+        .filter(productType -> productType.getSiebelCodes().contains(sc))
+        .findFirst())
+        .map(ProductType::getPeopleSoftCode)
+        .orElse(null);
   }
 }

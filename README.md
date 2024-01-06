@@ -30,7 +30,7 @@ The following guides illustrate how to use some features concretely:
 * http://localhost:8080/actuator
 
 ### WSDL
-* http://localhost:8080/soap/products-ws.wsdl
+* http://localhost:8080/bb-products/ws/products-ws.wsdl
 
 ### Request "BB_PECONSUPRODPSREQ1"
 

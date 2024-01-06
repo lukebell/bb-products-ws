@@ -22,10 +22,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<!--dependency>
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-security</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency-->
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -45,12 +49,12 @@
 			<artifactId>ojdbc11</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>software.aws.rds</groupId>
 			<artifactId>aws-mysql-jdbc</artifactId>
 			<version>1.1.8</version>
 			<scope>runtime</scope>
-		</dependency-->
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -59,6 +63,11 @@
 		<dependency>
 			<groupId>wsdl4j</groupId>
 			<artifactId>wsdl4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
@@ -121,6 +130,12 @@
 					<sources>
 						<source>${project.basedir}/src/main/resources/xsd/products.xsd</source>
 					</sources>
+					<!-- Java class output directory -->
+					<outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+					<!-- Package name for generated classes -->
+					<packageName>com.bb.products.ws.data.model.xml</packageName>
+					<!-- Package clean -> false -->
+					<clearOutputDir>false</clearOutputDir>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -1,10 +1,10 @@
 package com.bb.products.ws.service;
 
-//import com.bb.products.ws.data.repository.ProductRepository;
+import com.bb.products.ws.data.repository.ProductRepository;
 import com.bb.products.ws.exceptions.BadRequestException;
 
 import com.bb.products.ws.helper.ProductMapperHelper;
-import com.oracle.xmlns.enterprise.tools.schemas.*;
+import com.bb.products.ws.data.model.xml.*;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -22,14 +22,12 @@ import static com.bb.products.ws.data.enums.MessageCode.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class ProductService {
 
-  //private final ProductRepository productRepository;
+  private final ProductRepository productRepository;
   private final ProductMapperHelper helper;
 
   @Autowired
-  public ProductService(
-      //ProductRepository productRepository,
-      ProductMapperHelper helper) {
-    //this.productRepository = productRepository;
+  public ProductService(ProductRepository productRepository, ProductMapperHelper helper) {
+    this.productRepository = productRepository;
     this.helper = helper;
   }
 
@@ -41,16 +39,12 @@ public class ProductService {
 
       log.debug("Getting products for transactions: {}", bbTransactions.toString());
 
-      /* Uncomment once datasource is set
-
       val results = bbTransactions.stream()
           .map(bbt -> {
             List<String> params = new ArrayList<>();
             val query = helper.buildQueryParams(bbt, params);
             return productRepository.getActiveProducts(query, params.toArray(new String[0]));
           }).toList();
-       */
-      val results = helper.mockResults();
 
       return helper.buildResponse(results);
     } catch (BadRequestException ex) {

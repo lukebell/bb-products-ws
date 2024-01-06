@@ -4,8 +4,9 @@ import com.bb.products.ws.data.enums.IdType;
 import com.bb.products.ws.data.enums.ProductType;
 import com.bb.products.ws.data.model.ActiveProductsMapper;
 import com.bb.products.ws.data.model.BbTransaction;
+import com.bb.products.ws.data.model.xml.*;
 import com.bb.products.ws.exceptions.BadRequestException;
-import com.oracle.xmlns.enterprise.tools.schemas.*;
+
 import lombok.val;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -20,7 +21,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.groupingBy;
 import static com.bb.products.ws.data.enums.IdType.Type.PJ;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_ADDITIONAL_SELECT;
-import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_INNER_JOINS_QUERY;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_ASSET_NUMBER_WHERE;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PRODUCT_GROUP_WHERE;
 import static com.bb.products.ws.data.enums.MessageCode.OK;
@@ -34,12 +34,11 @@ public class ProductMapperHelper {
         .append(", ")
         .append(ACTIVE_PRODUCTS_ADDITIONAL_SELECT.getValue())
         .append(bbt.getIdType().getType().getQueryFrom())
-        .append(ACTIVE_PRODUCTS_INNER_JOINS_QUERY.getValue());
+        .append(bbt.getIdType().getType().getQueryInner());
 
     // add id type and id number
     query.append(bbt.getIdType().getType().getQueryWhere());
-    params.add(bbt.getIdType().getSiebelCode());
-    params.add(bbt.getIdNumber());
+    params.add(bbt.getIdType().getSiebelCode().concat(bbt.getIdNumber()));
 
     // add product group
     if (bbt.getProductType() != null && CollectionUtils.isNotEmpty(bbt.getProductType().getSiebelCodes())) {
@@ -56,7 +55,7 @@ public class ProductMapperHelper {
     return query.toString();
   }
 
-  public List<BbTransaction> getTransactions(List<TransactionPECONSUTypeShape> transactions) {
+  public List<BbTransaction> getTransactions(List<TransactionTypeShape> transactions) {
     return transactions.stream().map(t -> BbTransaction.builder()
         .idType(getIdType(t))
         .idNumber(getIdNumber(t))
@@ -66,28 +65,28 @@ public class ProductMapperHelper {
     ).collect(toList());
   }
 
-  private IdType getIdType(TransactionPECONSUTypeShape t) {
+  private IdType getIdType(TransactionTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getAATIPODOC())
         .filter(aaType -> StringUtils.isNotBlank(aaType.getValue()))
         .map(typeId -> IdType.getIdTypeByPeopleSoftCode(typeId.getValue()))
         .orElseThrow(() -> new BadRequestException("AA_TIPO_DOC is required"));
   }
 
-  private String getIdNumber(TransactionPECONSUTypeShape t) {
+  private String getIdNumber(TransactionTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getAANIT())
         .filter(aaNit -> StringUtils.isNotBlank(aaNit.getValue()))
         .map(AANITTypeShape::getValue)
         .orElseThrow(() -> new BadRequestException("AA_NIT is required"));
   }
 
-  private ProductType getProductType(TransactionPECONSUTypeShape t) {
+  private ProductType getProductType(TransactionTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getPRODUCTGROUP())
         .filter(productGroup -> StringUtils.isNotBlank(productGroup.getValue()))
         .map(productType -> ProductType.getProductTypeByPeopleSoftCode(productType.getValue()))
         .orElse(null);
   }
 
-  private String getProductNumber(TransactionPECONSUTypeShape t) {
+  private String getProductNumber(TransactionTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getFINACCOUNTID())
         .filter(finAccount -> StringUtils.isNotBlank(finAccount.getValue()))
         .map(FINACCOUNTIDTypeShape::getValue)
@@ -98,8 +97,8 @@ public class ProductMapperHelper {
     BBPSCONSUPRODPERES1 response = getBbpsconsuprodperes();
 
     results.forEach(r -> {
-      TransactionPEPRODUC1TypeShape transaction = new TransactionPEPRODUC1TypeShape();
-      BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape bbpe = new BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape();
+      TransactionRESTypeShape transaction = new TransactionRESTypeShape();
+      BBPECLIPRGETIMsgDataRecordRESTypeShape bbpe = new BBPECLIPRGETIMsgDataRecordRESTypeShape();
       bbpe.setMESSAGENBR(buildMESSAGENBR(OK.getMsgCode()));
       bbpe.setMESSAGETEXT(buildMESSAGETEXT(OK.getMessage()));
       buildMsgDataRecord(r, bbpe);
@@ -110,7 +109,7 @@ public class ProductMapperHelper {
     return response;
   }
 
-  private void buildMsgDataRecord(List<ActiveProductsMapper> r, BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape bbpe) {
+  private void buildMsgDataRecord(List<ActiveProductsMapper> r, BBPECLIPRGETIMsgDataRecordRESTypeShape bbpe) {
     r.stream()
         .collect(groupingBy(row -> new ImmutablePair<String, String>(row.getIdType(), row.getIdNumber()) {
         }))
@@ -140,7 +139,7 @@ public class ProductMapperHelper {
     BONAMETypeShape bonameTypeShape = new BONAMETypeShape();
     val idType = IdType.getIdTypeBySiebelCode(apm.getIdType());
     val values = PJ == idType.getType() ?
-        List.of(getOrEmpty(apm.getDesc())) :
+        List.of(getOrEmpty(apm.getDescription())) :
         List.of(
             getOrEmpty(apm.getLastName()),
             getOrEmpty(apm.getMaidenName()),
@@ -207,11 +206,11 @@ public class ProductMapperHelper {
 
   private BBPSCONSUPRODPERES1 getBbpsconsuprodperes() {
     BBPSCONSUPRODPERES1 response = new BBPSCONSUPRODPERES1();
-    FieldTypesPSCONSU1TypeShape fieldTypes = new FieldTypesPSCONSU1TypeShape();
-    fieldTypes.setBBPECLIPRGETI(new FieldTypesBBPECLIPRGETITypeShape());
-    fieldTypes.setBBPEPRODUC1I(new FieldTypesBBIPEPRODUC1TypeShape());
+    FieldTypesRESTypeShape fieldTypes = new FieldTypesRESTypeShape();
+    fieldTypes.setBBPECLIPRGETI(new FieldTypesBBPECLIPRGETIRESTypeShape());
+    fieldTypes.setBBPEPRODUC1I(new FieldTypesBBPEPRODUC1IRESTypeShape());
     response.setFieldTypes(fieldTypes);
-    MsgDataPEPRODUC1TypeShape msgData = new MsgDataPEPRODUC1TypeShape();
+    MsgDataRESTypeShape msgData = new MsgDataRESTypeShape();
     response.setMsgData(msgData);
     return response;
   }
@@ -222,8 +221,8 @@ public class ProductMapperHelper {
 
   public BBPSCONSUPRODPERES1 buildErrorResponse(BigInteger msgCode, String message) {
     BBPSCONSUPRODPERES1 response = getBbpsconsuprodperes();
-    TransactionPEPRODUC1TypeShape transaction = new TransactionPEPRODUC1TypeShape();
-    BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape bbpe = new BBPECLIPRGETIMsgDataRecordPEPRODUC1TypeShape();
+    TransactionRESTypeShape transaction = new TransactionRESTypeShape();
+    BBPECLIPRGETIMsgDataRecordRESTypeShape bbpe = new BBPECLIPRGETIMsgDataRecordRESTypeShape();
     bbpe.setMESSAGENBR(buildMESSAGENBR(msgCode));
     bbpe.setMESSAGETEXT(buildMESSAGETEXT(message));
     transaction.setBBPECLIPRGETI(bbpe);

@@ -18,6 +18,8 @@ import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PN_WHERE
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PJ_SELECT;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PJ_FROM;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PJ_WHERE;
+import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_INNER_JOINS_PN_QUERY;
+import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_INNER_JOINS_PJ_QUERY;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,7 +46,12 @@ public enum IdType {
   @AllArgsConstructor
   @Getter
   public enum Type {
-    PN(ACTIVE_PRODUCTS_PN_SELECT.getValue(), ACTIVE_PRODUCTS_PN_FROM.getValue(), ACTIVE_PRODUCTS_PN_WHERE.getValue()) {
+    PN(
+        ACTIVE_PRODUCTS_PN_SELECT.getValue(),
+        ACTIVE_PRODUCTS_PN_FROM.getValue(),
+        ACTIVE_PRODUCTS_INNER_JOINS_PN_QUERY.getValue(),
+        ACTIVE_PRODUCTS_PN_WHERE.getValue()
+    ) {
       @Override
       public String buildBoName(List<String> values) {
         if (CollectionUtils.isNotEmpty(values) && values.size() == 4) {
@@ -58,7 +65,12 @@ public enum IdType {
         return "";
       }
     },
-    PJ(ACTIVE_PRODUCTS_PJ_SELECT.getValue(), ACTIVE_PRODUCTS_PJ_FROM.getValue(), ACTIVE_PRODUCTS_PJ_WHERE.getValue()) {
+    PJ(
+        ACTIVE_PRODUCTS_PJ_SELECT.getValue(),
+        ACTIVE_PRODUCTS_PJ_FROM.getValue(),
+        ACTIVE_PRODUCTS_INNER_JOINS_PJ_QUERY.getValue(),
+        ACTIVE_PRODUCTS_PJ_WHERE.getValue()
+    ) {
       @Override
       public String buildBoName(List<String> values) {
         if (CollectionUtils.isNotEmpty(values) && values.size() == 1) {
@@ -70,6 +82,7 @@ public enum IdType {
 
     private String querySelect;
     private String queryFrom;
+    private String queryInner;
     private String queryWhere;
 
     public abstract String buildBoName(List<String> values);

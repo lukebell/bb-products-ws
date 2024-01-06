@@ -16,10 +16,15 @@ public class ActiveProductsMapper {
   private String maidenName;
   private String fstName;
   private String midName;
-  private String desc;
+  private String description;
   private String productId;
   private String productDescription;
   private String officeCode;
   private String productGroup;
   private String productNumber;
+  private String status;
+  private String costCenter;
+  private String endRelationshipClientProd;
+  private String relationshipClientProd;
+  private String integrationType;
 }

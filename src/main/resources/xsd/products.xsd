@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema elementFormDefault="qualified" targetNamespace="http://xmlns.oracle.com/Enterprise/Tools/schemas" xmlns="http://xmlns.oracle.com/Enterprise/Tools/schemas" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-    <xsd:element name="BB_CACONSPRODPSREQ">
+    <xsd:element name="BB_PECONSUPRODPSREQ1" >
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="FieldTypes" type="FieldTypes_TypeShape"/>
@@ -10,13 +10,22 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="BB_PSCONSUPRODPERES1">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FieldTypes" type="FieldTypesRES_TypeShape"/>
+                <xsd:element name="MsgData" type="MsgDataRES_TypeShape"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
     <xsd:complexType name="FieldTypes_TypeShape">
         <xsd:sequence>
-            <xsd:element name="BB_CACLIPRGET_I" type="FieldTypesBB_CACLIPRGET_I_TypeShape"/>
+            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_I_TypeShape"/>
             <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_CACLIPRGET_I_TypeShape">
+    <xsd:complexType name="FieldTypesBB_PECLIPRGET_I_TypeShape">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="FieldTypesCharFieldType"/>
             <xsd:element minOccurs="0" name="AA_NIT" type="FieldTypesCharFieldType"/>
@@ -63,11 +72,11 @@
     </xsd:complexType>
     <xsd:complexType name="Transaction_TypeShape">
         <xsd:sequence>
-            <xsd:element name="BB_CACLIPRGET_I" type="BB_CACLIPRGET_IMsgDataRecord_TypeShape"/>
+            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecord_TypeShape"/>
             <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:complexType name="BB_CACLIPRGET_IMsgDataRecord_TypeShape">
+    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecord_TypeShape">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="AA_TIPO_DOC_TypeShape"/>
             <xsd:element minOccurs="0" name="AA_NIT" type="AA_NIT_TypeShape"/>
@@ -299,23 +308,14 @@
         </xsd:restriction>
     </xsd:simpleType>
 
-    <xsd:element name="BB_PSCONSPRODCARES">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="FieldTypes" type="FieldTypesPSCONS_TypeShape"/>
-                <xsd:element name="MsgData" type="MsgDataPSCONS_TypeShape"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:complexType name="FieldTypesPSCONS_TypeShape">
+    <xsd:complexType name="FieldTypesRES_TypeShape">
         <xsd:sequence>
-            <xsd:element name="BB_CACLIPRGET_I" type="FieldTypesBB_CACLIPRGET_IPSCONS_TypeShape"/>
-            <xsd:element name="BB_CAPRODUC_I" type="FieldTypesBB_CAPRODUC_I_TypeShape"/>
-            <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
+            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_IRES_TypeShape"/>
+            <xsd:element name="BB_PEPRODUC1_I" type="FieldTypesBB_PEPRODUC1_IRES_TypeShape"/>
+            <xsd:element name="PSCAMA" type="FieldTypesPSCAMARES_TypeShape"/>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_CACLIPRGET_IPSCONS_TypeShape">
+    <xsd:complexType name="FieldTypesBB_PECLIPRGET_IRES_TypeShape">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="MESSAGE_NBR" type="FieldTypesNumberFieldType"/>
             <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="FieldTypesCharFieldType"/>
@@ -327,7 +327,7 @@
         </xsd:sequence>
         <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
     </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_CAPRODUC_I_TypeShape">
+    <xsd:complexType name="FieldTypesBB_PEPRODUC1_IRES_TypeShape">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
             <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
@@ -335,22 +335,41 @@
             <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="FieldTypesCharFieldType"/>
             <xsd:element minOccurs="0" name="PRODUCT_ID" type="FieldTypesCharFieldType"/>
             <xsd:element minOccurs="0" name="DESCR" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BEGIN_DATE" type="FieldTypesDateFieldType"/>
+            <xsd:element minOccurs="0" name="BB_EST_CTA_CANALES" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BB_TIPO_CTA" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BB_TITULARIDAD" type="FieldTypesCharFieldType"/>
             <xsd:element minOccurs="0" name="BB_ESTADO_CTA_APP" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BB_TIPO_CDT" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BB_COD_CEO" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="END_DT" type="FieldTypesDateFieldType"/>
         </xsd:sequence>
         <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
     </xsd:complexType>
-    <xsd:complexType name="MsgDataPSCONS_TypeShape">
+    <xsd:complexType name="FieldTypesPSCAMARES_TypeShape">
         <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="TransactionPSCONS_TypeShape"/>
+            <xsd:element minOccurs="0" name="LANGUAGE_CD" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="AUDIT_ACTN" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="BASE_LANGUAGE_CD" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="MSG_SEQ_FLG" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="PROCESS_INSTANCE" type="FieldTypesNumberFieldType"/>
+            <xsd:element minOccurs="0" name="PUBLISH_RULE_ID" type="FieldTypesCharFieldType"/>
+            <xsd:element minOccurs="0" name="MSGNODENAME" type="FieldTypesCharFieldType"/>
+        </xsd:sequence>
+        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="MsgDataRES_TypeShape">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="TransactionRES_TypeShape"/>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:complexType name="TransactionPSCONS_TypeShape">
+    <xsd:complexType name="TransactionRES_TypeShape">
         <xsd:sequence>
-            <xsd:element name="BB_CACLIPRGET_I" type="BB_CACLIPRGET_IMsgDataRecordPSCONS_TypeShape"/>
+            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecordRES_TypeShape"/>
             <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:complexType name="BB_CACLIPRGET_IMsgDataRecordPSCONS_TypeShape">
+    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecordRES_TypeShape">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="MESSAGE_NBR" type="MESSAGE_NBR_TypeShape"/>
             <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="MESSAGE_TEXT_TypeShape"/>
@@ -360,13 +379,13 @@
             <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
             <xsd:element minOccurs="0" name="CANAL" type="CANAL_TypeShape"/>
             <xsd:sequence maxOccurs="unbounded" minOccurs="0">
-                <xsd:element name="BB_CAPRODUC_I" type="BB_CAPRODUC_IMsgDataRecord_TypeShape"/>
+                <xsd:element name="BB_PEPRODUC1_I" type="BB_PEPRODUC1_IMsgDataRecord_TypeShape"/>
                 <xsd:element minOccurs="0" name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
             </xsd:sequence>
         </xsd:sequence>
         <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
     </xsd:complexType>
-    <xsd:complexType name="BB_CAPRODUC_IMsgDataRecord_TypeShape">
+    <xsd:complexType name="BB_PEPRODUC1_IMsgDataRecord_TypeShape">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
             <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
@@ -374,7 +393,14 @@
             <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="BB_COD_OFI_APER_TypeShape"/>
             <xsd:element minOccurs="0" name="PRODUCT_ID" type="PRODUCT_ID_TypeShape"/>
             <xsd:element minOccurs="0" name="DESCR" type="DESCR_TypeShape"/>
+            <xsd:element minOccurs="0" name="BEGIN_DATE" type="BEGIN_DATE_TypeShape"/>
+            <xsd:element minOccurs="0" name="BB_EST_CTA_CANALES" type="BB_EST_CTA_CANALES_TypeShape"/>
+            <xsd:element minOccurs="0" name="BB_TIPO_CTA" type="BB_TIPO_CTA_TypeShape"/>
+            <xsd:element minOccurs="0" name="BB_TITULARIDAD" type="BB_TITULARIDAD_TypeShape"/>
             <xsd:element minOccurs="0" name="BB_ESTADO_CTA_APP" type="BB_ESTADO_CTA_APP_TypeShape"/>
+            <xsd:element minOccurs="0" name="BB_TIPO_CDT" type="BB_TIPO_CDT_TypeShape"/>
+            <xsd:element minOccurs="0" name="BB_COD_CEO" type="BB_COD_CEO_TypeShape"/>
+            <xsd:element minOccurs="0" name="END_DT" type="END_DT_TypeShape"/>
         </xsd:sequence>
         <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
     </xsd:complexType>
@@ -439,9 +465,58 @@
             </xsd:extension>
         </xsd:simpleContent>
     </xsd:complexType>
+    <xsd:complexType name="BEGIN_DATE_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BEGIN_DATE_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BB_EST_CTA_CANALES_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BB_EST_CTA_CANALES_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BB_TIPO_CTA_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BB_TIPO_CTA_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BB_TITULARIDAD_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BB_TITULARIDAD_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
     <xsd:complexType name="BB_ESTADO_CTA_APP_TypeShape">
         <xsd:simpleContent>
             <xsd:extension base="BB_ESTADO_CTA_APP_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BB_TIPO_CDT_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BB_TIPO_CDT_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="BB_COD_CEO_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="BB_COD_CEO_TypeDef">
+                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="END_DT_TypeShape">
+        <xsd:simpleContent>
+            <xsd:extension base="END_DT_TypeDef">
                 <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
             </xsd:extension>
         </xsd:simpleContent>
@@ -488,243 +563,6 @@
             <xsd:whiteSpace value="preserve"/>
         </xsd:restriction>
     </xsd:simpleType>
-    <xsd:simpleType name="BB_ESTADO_CTA_APP_TypeDef">
-        <xsd:annotation>
-            <xsd:documentation>BB_ESTADO_CTA_APP is a character of length 4. Allows Uppercase characters including numbers</xsd:documentation>
-        </xsd:annotation>
-        <xsd:restriction base="xsd:string">
-            <xsd:maxLength value="4"/>
-            <xsd:whiteSpace value="preserve"/>
-            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
-    <xsd:element name="BB_PECONSUPRODPSREQ">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="FieldTypes" type="FieldTypesPECONSU_TypeShape"/>
-                <xsd:element name="MsgData" type="MsgDataPECONSU_TypeShape"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:complexType name="FieldTypesPECONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_IPECONSU_TypeShape"/>
-            <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_PECLIPRGET_IPECONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="AA_NIT" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="CANAL" type="FieldTypesCharFieldType"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="MsgDataPECONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="TransactionPECONSU_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="TransactionPECONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecord_TypeShape"/>
-            <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecord_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="AA_TIPO_DOC_TypeShape"/>
-            <xsd:element minOccurs="0" name="AA_NIT" type="AA_NIT_TypeShape"/>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="CANAL" type="CANAL_TypeShape"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-
-    <xsd:element name="BB_PSCONSUPRODPERES">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="FieldTypes" type="FieldTypesPSCONSU_TypeShape"/>
-                <xsd:element name="MsgData" type="MsgDataPSCONSU_TypeShape"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:complexType name="FieldTypesPSCONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_I_TypeShape"/>
-            <xsd:element name="BB_PEPRODUC_I" type="FieldTypesBB_PEPRODUC_I_TypeShape"/>
-            <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_PECLIPRGET_I_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="MESSAGE_NBR" type="FieldTypesNumberFieldType"/>
-            <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="AA_NIT" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="CANAL" type="FieldTypesCharFieldType"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_PEPRODUC_I_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="BO_NAME" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="PRODUCT_ID" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="DESCR" type="FieldTypesCharFieldType"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="MsgDataPSCONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="Transaction_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="TransactionPSCONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecordPSCONSU_TypeShape"/>
-            <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecordPSCONSU_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="MESSAGE_NBR" type="MESSAGE_NBR_TypeShape"/>
-            <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="MESSAGE_TEXT_TypeShape"/>
-            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="AA_TIPO_DOC_TypeShape"/>
-            <xsd:element minOccurs="0" name="AA_NIT" type="AA_NIT_TypeShape"/>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="CANAL" type="CANAL_TypeShape"/>
-            <xsd:sequence maxOccurs="unbounded" minOccurs="0">
-                <xsd:element name="BB_PEPRODUC_I" type="BB_PEPRODUC_IMsgDataRecord_TypeShape"/>
-                <xsd:element minOccurs="0" name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
-            </xsd:sequence>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="BB_PEPRODUC_IMsgDataRecord_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="BO_NAME" type="BO_NAME_TypeShape"/>
-            <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="BB_COD_OFI_APER_TypeShape"/>
-            <xsd:element minOccurs="0" name="PRODUCT_ID" type="PRODUCT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="DESCR" type="DESCR_TypeShape"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-
-    <xsd:element name="BB_PECONSUPRODPSREQ1">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="FieldTypes" type="FieldTypesPECONSU_TypeShape"/>
-                <xsd:element name="MsgData" type="MsgDataPECONSU_TypeShape"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:element name="BB_PSCONSUPRODPERES1">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="FieldTypes" type="FieldTypesPSCONSU1_TypeShape"/>
-                <xsd:element name="MsgData" type="MsgDataPEPRODUC1_TypeShape"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:complexType name="FieldTypesPSCONSU1_TypeShape">
-        <xsd:sequence>
-            <xsd:element name="BB_PECLIPRGET_I" type="FieldTypesBB_PECLIPRGET_I_TypeShape"/>
-            <xsd:element name="BB_PEPRODUC1_I" type="FieldTypesBB_IPEPRODUC1_TypeShape"/>
-            <xsd:element name="PSCAMA" type="FieldTypesPSCAMA_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="FieldTypesBB_IPEPRODUC1_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="BO_NAME" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="PRODUCT_ID" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="DESCR" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="BEGIN_DATE" type="FieldTypesDateFieldType"/>
-            <xsd:element minOccurs="0" name="BB_EST_CTA_CANALES" type="FieldTypesCharFieldType"/>
-            <xsd:element minOccurs="0" name="BB_TIPO_CTA" type="FieldTypesCharFieldType"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="MsgDataPEPRODUC1_TypeShape">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Transaction" type="TransactionPEPRODUC1_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="TransactionPEPRODUC1_TypeShape">
-        <xsd:sequence>
-            <xsd:element name="BB_PECLIPRGET_I" type="BB_PECLIPRGET_IMsgDataRecordPEPRODUC1_TypeShape"/>
-            <xsd:element name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="BB_PECLIPRGET_IMsgDataRecordPEPRODUC1_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="MESSAGE_NBR" type="MESSAGE_NBR_TypeShape"/>
-            <xsd:element minOccurs="0" name="MESSAGE_TEXT" type="MESSAGE_TEXT_TypeShape"/>
-            <xsd:element minOccurs="0" name="AA_TIPO_DOC" type="AA_TIPO_DOC_TypeShape"/>
-            <xsd:element minOccurs="0" name="AA_NIT" type="AA_NIT_TypeShape"/>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="CANAL" type="CANAL_TypeShape"/>
-            <xsd:sequence maxOccurs="unbounded" minOccurs="0">
-                <xsd:element name="BB_PEPRODUC1_I" type="BB_PEPRODUC1_IMsgDataRecord_TypeShape"/>
-                <xsd:element minOccurs="0" name="PSCAMA" type="PSCAMAMsgDataRecord_TypeShape"/>
-            </xsd:sequence>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="BB_PEPRODUC1_IMsgDataRecord_TypeShape">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="PRODUCT_GROUP" type="PRODUCT_GROUP_TypeShape"/>
-            <xsd:element minOccurs="0" name="FIN_ACCOUNT_ID" type="FIN_ACCOUNT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="BO_NAME" type="BO_NAME_TypeShape"/>
-            <xsd:element minOccurs="0" name="BB_COD_OFI_APER" type="BB_COD_OFI_APER_TypeShape"/>
-            <xsd:element minOccurs="0" name="PRODUCT_ID" type="PRODUCT_ID_TypeShape"/>
-            <xsd:element minOccurs="0" name="DESCR" type="DESCR_TypeShape"/>
-            <xsd:element minOccurs="0" name="BEGIN_DATE" type="BEGIN_DATE_TypeShape"/>
-            <xsd:element minOccurs="0" name="BB_EST_CTA_CANALES" type="BB_EST_CTA_CANALES_TypeShape"/>
-            <xsd:element minOccurs="0" name="BB_TIPO_CTA" type="BB_TIPO_CTA_TypeShape"/>
-        </xsd:sequence>
-        <xsd:attribute fixed="R" name="class" type="xsd:string" use="required"/>
-    </xsd:complexType>
-    <xsd:complexType name="BEGIN_DATE_TypeShape">
-        <xsd:simpleContent>
-            <xsd:extension base="BEGIN_DATE_TypeDef">
-                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
-            </xsd:extension>
-        </xsd:simpleContent>
-    </xsd:complexType>
-    <xsd:complexType name="BB_EST_CTA_CANALES_TypeShape">
-        <xsd:simpleContent>
-            <xsd:extension base="BB_EST_CTA_CANALES_TypeDef">
-                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
-            </xsd:extension>
-        </xsd:simpleContent>
-    </xsd:complexType>
-    <xsd:complexType name="BB_TIPO_CTA_TypeShape">
-        <xsd:simpleContent>
-            <xsd:extension base="BB_TIPO_CTA_TypeDef">
-                <xsd:attribute name="IsChanged" type="xsd:string" use="optional"/>
-            </xsd:extension>
-        </xsd:simpleContent>
-    </xsd:complexType>
     <xsd:simpleType name="BEGIN_DATE_TypeDef">
         <xsd:annotation>
             <xsd:documentation>BEGIN_DATE is a date.</xsd:documentation>
@@ -749,6 +587,53 @@
         <xsd:restriction base="xsd:string">
             <xsd:maxLength value="3"/>
             <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BB_TITULARIDAD_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>BB_TITULARIDAD is a character of length 2. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="2"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BB_ESTADO_CTA_APP_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>BB_ESTADO_CTA_APP is a character of length 4. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BB_TIPO_CDT_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>BB_TIPO_CDT is a character of length 1. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1"/>
+            <xsd:whiteSpace value="preserve"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BB_COD_CEO_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>BB_COD_CEO is a character of length 4. Allows Uppercase characters including numbers</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4"/>
+            <xsd:whiteSpace value="preserve"/>
+            <xsd:pattern value="([A-Z]|[0-9]|\p{Z}|\p{P}|\p{Lu})*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="END_DT_TypeDef">
+        <xsd:annotation>
+            <xsd:documentation>This field stores the end date values.</xsd:documentation>
+            <xsd:documentation>END_DT is a date.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:date">
+            <xsd:pattern value="(\d{4}-\d{2}-\d{2})"/>
         </xsd:restriction>
     </xsd:simpleType>
 

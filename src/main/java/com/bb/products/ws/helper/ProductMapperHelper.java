@@ -1,22 +1,21 @@
 package com.bb.products.ws.helper;
 
 import com.bb.products.ws.data.enums.IdType;
-import com.bb.products.ws.data.normalize.repository.ProductChannelRepository;
-import com.bb.products.ws.data.normalize.repository.ProductClassRepository;
-import com.bb.products.ws.data.normalize.repository.ProductRepository;
-import com.bb.products.ws.data.normalize.repository.TypeIdRepository;
+import com.bb.products.ws.data.normalize.dao.ProductClassDao;
+import com.bb.products.ws.data.normalize.dao.TypeIdDao;
 import com.bb.products.ws.data.siebel.model.ActiveProductsMapper;
 import com.bb.products.ws.data.siebel.model.ActiveProductDto;
 import com.bb.products.ws.data.schemas.*;
 import com.bb.products.ws.exceptions.BadRequestException;
 
+import com.bb.products.ws.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.DatatypeFactory;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
@@ -31,19 +30,13 @@ import static java.util.stream.Collectors.*;
 @Slf4j
 public class ProductMapperHelper {
 
-  private final TypeIdRepository typeIdRepository;
-  private final ProductChannelRepository productChannelRepository;
-  private final ProductClassRepository productClassRepository;
-  private final ProductRepository productRepository;
+  private final ProductClassDao productClassDao;
+  private final TypeIdDao typeIdDao;
 
-  public ProductMapperHelper(TypeIdRepository typeIdRepository,
-                             ProductChannelRepository productChannelRepository,
-                             ProductClassRepository productClassRepository,
-                             ProductRepository productRepository) {
-    this.typeIdRepository = typeIdRepository;
-    this.productChannelRepository = productChannelRepository;
-    this.productClassRepository = productClassRepository;
-    this.productRepository = productRepository;
+  @Autowired
+  public ProductMapperHelper(ProductClassDao productClassDao, TypeIdDao typeIdDao) {
+    this.productClassDao = productClassDao;
+    this.typeIdDao = typeIdDao;
   }
 
   public String buildQueryParams(ActiveProductDto activeProductDto, List<String> params) {
@@ -52,16 +45,14 @@ public class ProductMapperHelper {
     StringBuilder query = new StringBuilder(idType.getQuerySelect());
 
     // add id type and id number
-    // TODO: add redis call
-    val typeId = typeIdRepository.findByPeoplesoftCode(activeProductDto.getIdType());
-    params.add(typeId.getSiebelCode().concat(activeProductDto.getIdNumber()));
+    val typeId = typeIdDao.findByPeoplesoftCode(activeProductDto.getIdType());
+    params.add(typeId.concat(activeProductDto.getIdNumber()));
 
     // add product group
     if (activeProductDto.getProductType() != null && StringUtils.isNotBlank(activeProductDto.getProductType())) {
       query.append(ACTIVE_PRODUCTS_PRODUCT_GROUP_WHERE.getValue());
-      // TODO: add redis call
-      val productclass = productClassRepository.findByPeoplesoftCode(activeProductDto.getProductType());
-      params.add(productclass.getSiebelCode());
+      val productClass = productClassDao.findByPeoplesoftCode(activeProductDto.getProductType());
+      params.add(productClass);
     }
 
     // add asset number
@@ -170,19 +161,15 @@ public class ProductMapperHelper {
 
   private ENDDTTypeShape buildENDDT(String endRelationshipClientProd) {
     ENDDTTypeShape enddtTypeShape = new ENDDTTypeShape();
-    try {
-      if (StringUtils.isNotBlank(endRelationshipClientProd)) {
-        enddtTypeShape.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(endRelationshipClientProd));
-      }
-    } catch (Exception e) {
-      log.error("Error parsing date: {}", endRelationshipClientProd);
+    if (StringUtils.isNotBlank(endRelationshipClientProd)) {
+      enddtTypeShape.setValue(DateUtils.parseFromString(endRelationshipClientProd));
     }
     return enddtTypeShape;
   }
 
   private BBCODCEOTypeShape buildCodeCEO(String costCenter) {
     BBCODCEOTypeShape bbcodceoTypeShape = new BBCODCEOTypeShape();
-    if(StringUtils.isNotBlank(costCenter)) {
+    if (StringUtils.isNotBlank(costCenter)) {
       bbcodceoTypeShape.setValue(costCenter);
     }
     return bbcodceoTypeShape;
@@ -190,7 +177,7 @@ public class ProductMapperHelper {
 
   private BBESTADOCTAAPPTypeShape buildESTADOCTAAPP(String status) {
     BBESTADOCTAAPPTypeShape bbestadoctaappTypeShape = new BBESTADOCTAAPPTypeShape();
-    if(StringUtils.isNotBlank(status)) {
+    if (StringUtils.isNotBlank(status)) {
       bbestadoctaappTypeShape.setValue(status);
     }
     return bbestadoctaappTypeShape;
@@ -198,7 +185,7 @@ public class ProductMapperHelper {
 
   private BBTITULARIDADTypeShape buildTITULARIDAD(String integrationType) {
     BBTITULARIDADTypeShape bbtitularidadTypeShape = new BBTITULARIDADTypeShape();
-    if(StringUtils.isNotBlank(integrationType)) {
+    if (StringUtils.isNotBlank(integrationType)) {
       // TODO: add homologacion titularidad
       bbtitularidadTypeShape.setValue(integrationType);
     }
@@ -207,21 +194,17 @@ public class ProductMapperHelper {
 
   private BEGINDATETypeShape buildBEGINDATE(String beginRelationshipClientProd) {
     BEGINDATETypeShape begindateTypeShape = new BEGINDATETypeShape();
-    try {
-      if (StringUtils.isNotBlank(beginRelationshipClientProd)) {
-        begindateTypeShape.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(beginRelationshipClientProd));
-      }
-    } catch (Exception e) {
-      log.error("Error parsing date: {}", beginRelationshipClientProd);
+
+    if (StringUtils.isNotBlank(beginRelationshipClientProd)) {
+      begindateTypeShape.setValue(DateUtils.parseFromString(beginRelationshipClientProd));
     }
     return begindateTypeShape;
   }
 
   private BONAMETypeShape buildBONAME(ActiveProductsMapper apm) {
     BONAMETypeShape bonameTypeShape = new BONAMETypeShape();
-    // TODO: add redis call
-    val typeId = typeIdRepository.findBySiebelCode(apm.getIdType());
-    val idType = IdType.getIdTypeByPeopleSoftCode(typeId.getPeoplesoftCode());
+    val typeId = typeIdDao.findBySiebelCode(apm.getIdType());
+    val idType = IdType.getIdTypeByPeopleSoftCode(typeId);
     val values = PJ == idType ?
         List.of(getOrEmpty(apm.getDescription())) :
         List.of(
@@ -248,10 +231,9 @@ public class ProductMapperHelper {
 
   private PRODUCTGROUPTypeShape buildPRODUCTGROUP(String productGroup) {
     PRODUCTGROUPTypeShape productgroupTypeShape = new PRODUCTGROUPTypeShape();
-    if(StringUtils.isNotBlank(productGroup)) {
-      // TODO: add redis call
-      val productType = productClassRepository.findBySiebelCode(productGroup);
-      productgroupTypeShape.setValue(productType.getPeoplesoftCode());
+    if (StringUtils.isNotBlank(productGroup)) {
+      val productType = productClassDao.findBySiebelCode(productGroup);
+      productgroupTypeShape.setValue(productType);
     }
     return productgroupTypeShape;
   }

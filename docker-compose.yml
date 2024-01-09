@@ -3,6 +3,9 @@ version: "3.7"
 services:
   bb-products-ws:
     image: bb-products-ws:latest
+    environment:
+      - API_CONNECT_CLIENT_ID=${API_CONNECT_CLIENT_ID}
+      - API_CONNECT_CLIENT_SECRET=${API_CONNECT_CLIENT_SECRET}
   redis:
     image: redis:5.0-alpine
     ports:

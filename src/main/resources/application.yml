@@ -1,9 +1,18 @@
 spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 500
+      maxIdle: ${CACHE_MAX_IDLE:-10}
+      maxTotal: ${CACHE_MAX_TOTAL:-10}
+      minIdle: ${CACHE_MIN_IDLE:-10}
+      connectTimeout: 2500
   ws.products:
-    clientId: ${API_CONNECT_CLIENT_ID}
-    clientSecret: ${API_CONNECT_CLIENT_SECRET}
+    clientId: ${API_CONNECT_CLIENT_ID:null}
+    clientSecret: ${API_CONNECT_CLIENT_SECRET:null}
 
-  datasource:
+  datasource-siebel:
     url: jdbc:mysql:aws://localhost:3306/siebel?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
     username: root
     password: root
@@ -14,6 +23,20 @@ spring:
       connectionTestQuery: select now() from dual
       connectionTimeout: 20000
       jdbc-url: jdbc:mysql:aws://localhost:3306/siebel?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+      username: root
+      password: root
+
+  datasource-normalize:
+    url: jdbc:mysql:aws://localhost:3306/normalize?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+    username: root
+    password: root
+    driverClassName: software.aws.rds.jdbc.mysql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximumPoolSize: 30
+      connectionTestQuery: select now() from dual
+      connectionTimeout: 20000
+      jdbc-url: jdbc:mysql:aws://localhost:3306/normalize?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
       username: root
       password: root
 

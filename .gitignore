@@ -31,6 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/java/com/bb/products/ws/data/model/xml/
+/src/main/java/com/bb/products/ws/data/schemas/
 /src/main/resources/application-local.yml
 /src/main/java/META-INF/JAXB/

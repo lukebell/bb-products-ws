@@ -11,9 +11,7 @@ import java.math.BigInteger;
 @Getter
 public enum MessageCode {
   OK(BigInteger.valueOf(0), "Message Successfully Processed"),
-  INTERNAL_SERVER_ERROR(BigInteger.valueOf(500), "Internal Server Error"),
-  BAD_REQUEST(BigInteger.valueOf(400), "Bad Request: %s");
-
+  OPERATION_ERROR(BigInteger.valueOf(1), "%s");
 
   private BigInteger msgCode;
   private String message;

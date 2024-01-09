@@ -32,6 +32,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
@@ -133,7 +137,7 @@
 					<!-- Java class output directory -->
 					<outputDirectory>${project.basedir}/src/main/java</outputDirectory>
 					<!-- Package name for generated classes -->
-					<packageName>com.bb.products.ws.data.model.xml</packageName>
+					<packageName>com.bb.products.ws.data.schemas</packageName>
 					<!-- Package clean -> false -->
 					<clearOutputDir>false</clearOutputDir>
 				</configuration>

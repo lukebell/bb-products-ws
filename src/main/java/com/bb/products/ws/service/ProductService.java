@@ -1,10 +1,11 @@
 package com.bb.products.ws.service;
 
-import com.bb.products.ws.data.repository.ProductRepository;
+import com.bb.products.ws.data.siebel.repository.ActiveProductRepository;
+import com.bb.products.ws.data.schemas.BBPECONSUPRODPSREQ1;
+import com.bb.products.ws.data.schemas.BBPSCONSUPRODPERES1;
 import com.bb.products.ws.exceptions.BadRequestException;
 
 import com.bb.products.ws.helper.ProductMapperHelper;
-import com.bb.products.ws.data.model.xml.*;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -15,31 +16,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.bb.products.ws.data.enums.MessageCode.BAD_REQUEST;
-import static com.bb.products.ws.data.enums.MessageCode.INTERNAL_SERVER_ERROR;
+import static com.bb.products.ws.data.enums.MessageCode.OPERATION_ERROR;
 
 @Service
 @Slf4j
 public class ProductService {
 
-  private final ProductRepository productRepository;
+  private final ActiveProductRepository productRepository;
   private final ProductMapperHelper helper;
 
   @Autowired
-  public ProductService(ProductRepository productRepository, ProductMapperHelper helper) {
+  public ProductService(ActiveProductRepository productRepository, ProductMapperHelper helper) {
     this.productRepository = productRepository;
     this.helper = helper;
   }
 
   public BBPSCONSUPRODPERES1 getActiveProducts(BBPECONSUPRODPSREQ1 request) {
     try {
-      val bbTransactions = Optional.ofNullable(request.getMsgData().getTransaction())
+      val activeProductDtoList = Optional.ofNullable(request.getMsgData().getTransaction())
           .map(helper::getTransactions)
           .orElseThrow(() -> new BadRequestException("Transaction is required"));
 
-      log.debug("Getting products for transactions: {}", bbTransactions.toString());
+      log.debug("Getting products for transactions: {}", activeProductDtoList.toString());
 
-      val results = bbTransactions.stream()
+      val results = activeProductDtoList.stream()
           .map(bbt -> {
             List<String> params = new ArrayList<>();
             val query = helper.buildQueryParams(bbt, params);
@@ -47,14 +47,10 @@ public class ProductService {
           }).toList();
 
       return helper.buildResponse(results);
-    } catch (BadRequestException ex) {
-      log.error("Error trying to get active products: {}", ex.getMessage());
-      return helper.buildErrorResponse(BAD_REQUEST.getMsgCode(),
-          String.format(BAD_REQUEST.getMessage(), ex.getMessage()));
     } catch (Exception ex) {
       log.error("Error trying to get active products: {}", ex.getMessage());
-      return helper.buildErrorResponse(INTERNAL_SERVER_ERROR.getMsgCode(),
-          INTERNAL_SERVER_ERROR.getMessage());
+      return helper.buildErrorResponse(OPERATION_ERROR.getMsgCode(),
+          String.format(OPERATION_ERROR.getMessage(), ex.getMessage()));
     }
   }
 

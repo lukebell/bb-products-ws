@@ -1,7 +1,7 @@
 package com.bb.products.ws.controller;
 
-import com.bb.products.ws.data.model.xml.BBPECONSUPRODPSREQ1;
-import com.bb.products.ws.data.model.xml.BBPSCONSUPRODPERES1;
+import com.bb.products.ws.data.schemas.BBPECONSUPRODPSREQ1;
+import com.bb.products.ws.data.schemas.BBPSCONSUPRODPERES1;
 import com.bb.products.ws.service.ProductService;
 
 import lombok.extern.slf4j.Slf4j;

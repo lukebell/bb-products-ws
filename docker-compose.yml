@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  bb-products-ws:
+    image: bb-products-ws:latest
+  redis:
+    image: redis:5.0-alpine
+    ports:
+      - "6379:6379"

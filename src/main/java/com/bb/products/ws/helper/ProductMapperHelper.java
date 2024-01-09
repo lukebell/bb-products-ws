@@ -1,74 +1,93 @@
 package com.bb.products.ws.helper;
 
 import com.bb.products.ws.data.enums.IdType;
-import com.bb.products.ws.data.enums.ProductType;
-import com.bb.products.ws.data.model.ActiveProductsMapper;
-import com.bb.products.ws.data.model.BbTransaction;
-import com.bb.products.ws.data.model.xml.*;
+import com.bb.products.ws.data.normalize.repository.ProductChannelRepository;
+import com.bb.products.ws.data.normalize.repository.ProductClassRepository;
+import com.bb.products.ws.data.normalize.repository.ProductRepository;
+import com.bb.products.ws.data.normalize.repository.TypeIdRepository;
+import com.bb.products.ws.data.siebel.model.ActiveProductsMapper;
+import com.bb.products.ws.data.siebel.model.ActiveProductDto;
+import com.bb.products.ws.data.schemas.*;
 import com.bb.products.ws.exceptions.BadRequestException;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.xml.datatype.DatatypeFactory;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.groupingBy;
-import static com.bb.products.ws.data.enums.IdType.Type.PJ;
-import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_ADDITIONAL_SELECT;
+import static com.bb.products.ws.data.enums.IdType.PJ;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_ASSET_NUMBER_WHERE;
 import static com.bb.products.ws.data.enums.QueryValues.ACTIVE_PRODUCTS_PRODUCT_GROUP_WHERE;
 import static com.bb.products.ws.data.enums.MessageCode.OK;
+import static java.util.stream.Collectors.*;
 
 @Component
+@Slf4j
 public class ProductMapperHelper {
 
-  public String buildQueryParams(BbTransaction bbt, List<String> params) {
+  private final TypeIdRepository typeIdRepository;
+  private final ProductChannelRepository productChannelRepository;
+  private final ProductClassRepository productClassRepository;
+  private final ProductRepository productRepository;
 
-    StringBuilder query = new StringBuilder(bbt.getIdType().getType().getQuerySelect())
-        .append(", ")
-        .append(ACTIVE_PRODUCTS_ADDITIONAL_SELECT.getValue())
-        .append(bbt.getIdType().getType().getQueryFrom())
-        .append(bbt.getIdType().getType().getQueryInner());
+  public ProductMapperHelper(TypeIdRepository typeIdRepository,
+                             ProductChannelRepository productChannelRepository,
+                             ProductClassRepository productClassRepository,
+                             ProductRepository productRepository) {
+    this.typeIdRepository = typeIdRepository;
+    this.productChannelRepository = productChannelRepository;
+    this.productClassRepository = productClassRepository;
+    this.productRepository = productRepository;
+  }
+
+  public String buildQueryParams(ActiveProductDto activeProductDto, List<String> params) {
+
+    val idType = IdType.getIdTypeByPeopleSoftCode(activeProductDto.getIdType());
+    StringBuilder query = new StringBuilder(idType.getQuerySelect());
 
     // add id type and id number
-    query.append(bbt.getIdType().getType().getQueryWhere());
-    params.add(bbt.getIdType().getSiebelCode().concat(bbt.getIdNumber()));
+    // TODO: add redis call
+    val typeId = typeIdRepository.findByPeoplesoftCode(activeProductDto.getIdType());
+    params.add(typeId.getSiebelCode().concat(activeProductDto.getIdNumber()));
 
     // add product group
-    if (bbt.getProductType() != null && CollectionUtils.isNotEmpty(bbt.getProductType().getSiebelCodes())) {
+    if (activeProductDto.getProductType() != null && StringUtils.isNotBlank(activeProductDto.getProductType())) {
       query.append(ACTIVE_PRODUCTS_PRODUCT_GROUP_WHERE.getValue());
-      params.add(String.join(",", bbt.getProductType().getSiebelCodes()));
+      // TODO: add redis call
+      val productclass = productClassRepository.findByPeoplesoftCode(activeProductDto.getProductType());
+      params.add(productclass.getSiebelCode());
     }
 
     // add asset number
-    if (StringUtils.isNotBlank(bbt.getProductNumber())) {
+    if (StringUtils.isNotBlank(activeProductDto.getProductNumber())) {
       query.append(ACTIVE_PRODUCTS_ASSET_NUMBER_WHERE.getValue());
-      params.add(bbt.getProductNumber());
+      params.add(activeProductDto.getProductNumber());
     }
 
     return query.toString();
   }
 
-  public List<BbTransaction> getTransactions(List<TransactionTypeShape> transactions) {
-    return transactions.stream().map(t -> BbTransaction.builder()
+  public List<ActiveProductDto> getTransactions(List<TransactionTypeShape> transactions) {
+    return transactions.stream().map(t -> ActiveProductDto.builder()
         .idType(getIdType(t))
         .idNumber(getIdNumber(t))
         .productType(getProductType(t))
         .productNumber(getProductNumber(t))
+        .canal(getChannel(t))
         .build()
     ).collect(toList());
   }
 
-  private IdType getIdType(TransactionTypeShape t) {
+  private String getIdType(TransactionTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getAATIPODOC())
-        .filter(aaType -> StringUtils.isNotBlank(aaType.getValue()))
-        .map(typeId -> IdType.getIdTypeByPeopleSoftCode(typeId.getValue()))
+        .filter(aaTipoDoc -> StringUtils.isNotBlank(aaTipoDoc.getValue()))
+        .map(AATIPODOCTypeShape::getValue)
         .orElseThrow(() -> new BadRequestException("AA_TIPO_DOC is required"));
   }
 
@@ -79,10 +98,10 @@ public class ProductMapperHelper {
         .orElseThrow(() -> new BadRequestException("AA_NIT is required"));
   }
 
-  private ProductType getProductType(TransactionTypeShape t) {
+  private String getProductType(TransactionTypeShape t) {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getPRODUCTGROUP())
         .filter(productGroup -> StringUtils.isNotBlank(productGroup.getValue()))
-        .map(productType -> ProductType.getProductTypeByPeopleSoftCode(productType.getValue()))
+        .map(PRODUCTGROUPTypeShape::getValue)
         .orElse(null);
   }
 
@@ -90,6 +109,13 @@ public class ProductMapperHelper {
     return Optional.ofNullable(t.getBBPECLIPRGETI().getFINACCOUNTID())
         .filter(finAccount -> StringUtils.isNotBlank(finAccount.getValue()))
         .map(FINACCOUNTIDTypeShape::getValue)
+        .orElse(null);
+  }
+
+  private String getChannel(TransactionTypeShape t) {
+    return Optional.ofNullable(t.getBBPECLIPRGETI().getCANAL())
+        .filter(canal -> StringUtils.isNotBlank(canal.getValue()))
+        .map(CANALTypeShape::getValue)
         .orElse(null);
   }
 
@@ -116,6 +142,8 @@ public class ProductMapperHelper {
         .forEach((pair, value) -> {
           bbpe.setAANIT(buildAANIT(pair.getValue()));
           bbpe.setAATIPODOC(buildAATIPODOC(pair.getKey()));
+          //TODO: add canal to the response
+          //bbpe.setCANAL();
           value.forEach(v ->
               bbpe.getBBPEPRODUC1IAndPSCAMA().add(buildBBPEPRODUCI(v))
           );
@@ -131,14 +159,70 @@ public class ProductMapperHelper {
     typeShape.setDESCR(buildDESCR(apm.getProductDescription()));
     typeShape.setBBCODOFIAPER(buildBBCODOFIAPER(apm.getOfficeCode()));
     typeShape.setBONAME(buildBONAME(apm));
+    typeShape.setBEGINDATE(buildBEGINDATE(apm.getBeginRelationshipClientProd()));
+    typeShape.setBBTITULARIDAD(buildTITULARIDAD(apm.getIntegrationType()));
+    typeShape.setBBESTADOCTAAPP(buildESTADOCTAAPP(apm.getStatus()));
+    typeShape.setBBCODCEO(buildCodeCEO(apm.getCostCenter()));
+    typeShape.setENDDT(buildENDDT(apm.getEndRelationshipClientProd()));
 
     return typeShape;
   }
 
+  private ENDDTTypeShape buildENDDT(String endRelationshipClientProd) {
+    ENDDTTypeShape enddtTypeShape = new ENDDTTypeShape();
+    try {
+      if (StringUtils.isNotBlank(endRelationshipClientProd)) {
+        enddtTypeShape.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(endRelationshipClientProd));
+      }
+    } catch (Exception e) {
+      log.error("Error parsing date: {}", endRelationshipClientProd);
+    }
+    return enddtTypeShape;
+  }
+
+  private BBCODCEOTypeShape buildCodeCEO(String costCenter) {
+    BBCODCEOTypeShape bbcodceoTypeShape = new BBCODCEOTypeShape();
+    if(StringUtils.isNotBlank(costCenter)) {
+      bbcodceoTypeShape.setValue(costCenter);
+    }
+    return bbcodceoTypeShape;
+  }
+
+  private BBESTADOCTAAPPTypeShape buildESTADOCTAAPP(String status) {
+    BBESTADOCTAAPPTypeShape bbestadoctaappTypeShape = new BBESTADOCTAAPPTypeShape();
+    if(StringUtils.isNotBlank(status)) {
+      bbestadoctaappTypeShape.setValue(status);
+    }
+    return bbestadoctaappTypeShape;
+  }
+
+  private BBTITULARIDADTypeShape buildTITULARIDAD(String integrationType) {
+    BBTITULARIDADTypeShape bbtitularidadTypeShape = new BBTITULARIDADTypeShape();
+    if(StringUtils.isNotBlank(integrationType)) {
+      // TODO: add homologacion titularidad
+      bbtitularidadTypeShape.setValue(integrationType);
+    }
+    return bbtitularidadTypeShape;
+  }
+
+  private BEGINDATETypeShape buildBEGINDATE(String beginRelationshipClientProd) {
+    BEGINDATETypeShape begindateTypeShape = new BEGINDATETypeShape();
+    try {
+      if (StringUtils.isNotBlank(beginRelationshipClientProd)) {
+        begindateTypeShape.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(beginRelationshipClientProd));
+      }
+    } catch (Exception e) {
+      log.error("Error parsing date: {}", beginRelationshipClientProd);
+    }
+    return begindateTypeShape;
+  }
+
   private BONAMETypeShape buildBONAME(ActiveProductsMapper apm) {
     BONAMETypeShape bonameTypeShape = new BONAMETypeShape();
-    val idType = IdType.getIdTypeBySiebelCode(apm.getIdType());
-    val values = PJ == idType.getType() ?
+    // TODO: add redis call
+    val typeId = typeIdRepository.findBySiebelCode(apm.getIdType());
+    val idType = IdType.getIdTypeByPeopleSoftCode(typeId.getPeoplesoftCode());
+    val values = PJ == idType ?
         List.of(getOrEmpty(apm.getDescription())) :
         List.of(
             getOrEmpty(apm.getLastName()),
@@ -146,7 +230,7 @@ public class ProductMapperHelper {
             getOrEmpty(apm.getFstName()),
             getOrEmpty(apm.getMidName())
         );
-    bonameTypeShape.setValue(idType.getType().buildBoName(values));
+    bonameTypeShape.setValue(idType.buildBoName(values));
     return bonameTypeShape;
   }
 
@@ -164,7 +248,11 @@ public class ProductMapperHelper {
 
   private PRODUCTGROUPTypeShape buildPRODUCTGROUP(String productGroup) {
     PRODUCTGROUPTypeShape productgroupTypeShape = new PRODUCTGROUPTypeShape();
-    productgroupTypeShape.setValue(ProductType.getPeopleSoftCodeBySiebelCode(productGroup));
+    if(StringUtils.isNotBlank(productGroup)) {
+      // TODO: add redis call
+      val productType = productClassRepository.findBySiebelCode(productGroup);
+      productgroupTypeShape.setValue(productType.getPeoplesoftCode());
+    }
     return productgroupTypeShape;
   }
 

@@ -1,4 +1,4 @@
-package com.bb.products.ws.data.model;
+package com.bb.products.ws.data.siebel.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +25,6 @@ public class ActiveProductsMapper {
   private String status;
   private String costCenter;
   private String endRelationshipClientProd;
-  private String relationshipClientProd;
+  private String beginRelationshipClientProd;
   private String integrationType;
 }

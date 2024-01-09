@@ -1,7 +1,8 @@
-package com.bb.products.ws.data.repository;
+package com.bb.products.ws.data.siebel.repository;
 
-import com.bb.products.ws.data.model.ActiveProductsMapper;
+import com.bb.products.ws.data.siebel.model.ActiveProductsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
@@ -12,12 +13,12 @@ import java.util.List;
 
 @Component
 @Repository
-public class ProductRepository {
+public class ActiveProductRepository {
 
   private final JdbcTemplate jdbcTemplate;
 
   @Autowired
-  public ProductRepository(JdbcTemplate jdbcTemplate) {
+  public ActiveProductRepository(@Qualifier("siebelJdbcTemplate")JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
 

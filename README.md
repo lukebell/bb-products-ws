@@ -95,3 +95,17 @@ The following guides illustrate how to use some features concretely:
    </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
+
+### DOCKER
+
+* Build Image
+
+```angular2html
+docker build -t bb-products-ws:latest .  
+```
+
+* Run container
+
+```angular2html
+docker run -d -p 8080:8080 --name bb-products-ws bb-products-ws:latest . 
+```

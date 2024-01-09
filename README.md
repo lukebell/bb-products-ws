@@ -36,29 +36,29 @@ The following guides illustrate how to use some features concretely:
 
 ```angular2html
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://xmlns.oracle.com/Enterprise/Tools/schemas">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <sch:BB_PECONSUPRODPSREQ1>
-         <sch:FieldTypes>
-            <sch:BB_PECLIPRGET_I class="R" />
-            <sch:PSCAMA class="R" />
-         </sch:FieldTypes>
-         <sch:MsgData>
-            <!--Zero or more repetitions:-->
-            <sch:Transaction>
-               <sch:BB_PECLIPRGET_I class="R">
-                  <sch:AA_TIPO_DOC>T</sch:AA_TIPO_DOC>
-                  <sch:AA_NIT>36156458</sch:AA_NIT>
-                  <!--Optional:-->
-                  <sch:PRODUCT_GROUP></sch:PRODUCT_GROUP>
-                  <!--Optional:-->
-                  <sch:FIN_ACCOUNT_ID></sch:FIN_ACCOUNT_ID>
-               </sch:BB_PECLIPRGET_I>
-               <sch:PSCAMA class="R" />
-            </sch:Transaction>
-         </sch:MsgData>
-      </sch:BB_PECONSUPRODPSREQ1>
-   </soapenv:Body>
+    <soapenv:Header/>
+    <soapenv:Body>
+        <sch:BB_PECONSUPRODPSREQ1>
+            <sch:FieldTypes>
+                <sch:BB_PECLIPRGET_I class="R" />
+                <sch:PSCAMA class="R" />
+            </sch:FieldTypes>
+            <sch:MsgData>
+                <!--Zero or more repetitions:-->
+                <sch:Transaction>
+                    <sch:BB_PECLIPRGET_I class="R">
+                        <sch:AA_TIPO_DOC>C</sch:AA_TIPO_DOC>
+                        <sch:AA_NIT>39748950</sch:AA_NIT>
+                        <!--Optional:-->
+                        <sch:PRODUCT_GROUP></sch:PRODUCT_GROUP>
+                        <!--Optional:-->
+                        <sch:FIN_ACCOUNT_ID></sch:FIN_ACCOUNT_ID>
+                    </sch:BB_PECLIPRGET_I>
+                    <sch:PSCAMA class="R" />
+                </sch:Transaction>
+            </sch:MsgData>
+        </sch:BB_PECONSUPRODPSREQ1>
+    </soapenv:Body>
 </soapenv:Envelope>
 ```
 

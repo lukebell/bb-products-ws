@@ -1,6 +1,7 @@
 package com.bb.products.ws.helper;
 
 import com.bb.products.ws.data.enums.IdType;
+import com.bb.products.ws.data.normalize.dao.OwnershipDao;
 import com.bb.products.ws.data.normalize.dao.ProductClassDao;
 import com.bb.products.ws.data.normalize.dao.TypeIdDao;
 import com.bb.products.ws.data.siebel.model.ActiveProductsMapper;
@@ -33,10 +34,13 @@ public class ProductMapperHelper {
   private final ProductClassDao productClassDao;
   private final TypeIdDao typeIdDao;
 
+  private final OwnershipDao ownershipDao;
+
   @Autowired
-  public ProductMapperHelper(ProductClassDao productClassDao, TypeIdDao typeIdDao) {
+  public ProductMapperHelper(ProductClassDao productClassDao, TypeIdDao typeIdDao, OwnershipDao ownershipDao) {
     this.productClassDao = productClassDao;
     this.typeIdDao = typeIdDao;
+    this.ownershipDao = ownershipDao;
   }
 
   public String buildQueryParams(ActiveProductDto activeProductDto, List<String> params) {
@@ -186,8 +190,8 @@ public class ProductMapperHelper {
   private BBTITULARIDADTypeShape buildTITULARIDAD(String integrationType) {
     BBTITULARIDADTypeShape bbtitularidadTypeShape = new BBTITULARIDADTypeShape();
     if (StringUtils.isNotBlank(integrationType)) {
-      // TODO: add homologacion titularidad
-      bbtitularidadTypeShape.setValue(integrationType);
+      val integrationTypeFormat = ownershipDao.findBySiebelCode(integrationType);
+      bbtitularidadTypeShape.setValue(integrationTypeFormat);
     }
     return bbtitularidadTypeShape;
   }
